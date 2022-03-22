@@ -12,7 +12,7 @@ class ControllerPageViewModel extends BaseViewModel {
 
   ControllerPageViewModel() :
         _frecoMessenger = FReCoMessenger() {
-    _positionMessage = _frecoMessenger.getMessageStream<PositionMessage>();
+    _positionMessage = _frecoMessenger.getMessageStream<PositionMessage>(PositionMessage.messageId);
     _positionMessage.listen((event) {
       x = event.x;
       y = event.y;

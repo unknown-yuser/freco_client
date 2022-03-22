@@ -1,5 +1,7 @@
 import 'package:flutter/cupertino.dart';
 import 'package:freco_client/service/freco_message.dart';
+import 'package:mqtt_client/mqtt_client.dart';
+import 'package:mqtt_client/mqtt_server_client.dart';
 import 'package:rxdart/rxdart.dart';
 import 'freco_message.dart';
 
@@ -14,7 +16,8 @@ class FReCoMessenger {
     }
   }
 
-  Stream<T> getMessageStream<T extends FReCoMessage>() {
+  Stream<T> getMessageStream<T extends FReCoMessage>(String messageId) {
+    _client.subscribeMessage(messageId);
     return _client.getMessageSubject().whereType<T>();
   }
 }
