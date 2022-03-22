@@ -5,7 +5,7 @@ import 'package:freco_client/service/freco_messenger.dart';
 void main() {
   testWidgets('test', (WidgetTester tester) async {
     var messenger = FReCoMessenger();
-    var observable = messenger.getObservable<PositionMessage>();
+    var observable = messenger.getMessageStream<PositionMessage>();
     observable.listen((event) {
       print("get position message");
     });

@@ -14,7 +14,7 @@ class FReCoMessenger {
     }
   }
 
-  Stream<T> getObservable<T extends FReCoMessage>() {
+  Stream<T> getMessageStream<T extends FReCoMessage>() {
     return _client.getMessageSubject().whereType<T>();
   }
 }

@@ -10,10 +10,14 @@ class ControllerPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ViewModelBuilder<ControllerPageViewModel>.reactive(
         viewModelBuilder: () => ControllerPageViewModel(),
-        builder: (context, viewModel, child) => const Scaffold(
+        builder: (context, viewModel, child) => Scaffold(
           backgroundColor: ColorStyle.backgroundColor,
           body: Center(
-            child: Text("Here is controller page"),
+            child: Column (
+              children: <Widget>[
+                Text("Position x:${viewModel.x} y:${viewModel.y}"),
+              ],
+            ),
           ),
         )
     );
