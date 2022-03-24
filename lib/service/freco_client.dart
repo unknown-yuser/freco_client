@@ -61,11 +61,7 @@ class FReCoMqttClient {
       final recMess = c![0].payload as MqttPublishMessage;
       final String payloadMessage =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-
-      // TODO:pt = "{x},{y}" として入っているものとする。フォーマットを決める。
-      // TODO: topic から message を作成する仕組みを作る
-      final values = payloadMessage.split(",");
-      _worker.addMessage(PositionMessage(int.parse(values[0]), int.parse(values[1])));
+      _worker.addMessage(FReCoMessageFactory.createMessage(topic, payloadMessage));
     });
   }
 
