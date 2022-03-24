@@ -2,16 +2,22 @@ part of 'freco_messenger.dart';
 
 abstract class FReCoClient {
   Subject<FReCoMessage> getMessageSubject();
+
   Future subscribeMessage(String messageId);
 }
 
 class _FReCoTestClient implements FReCoClient {
   final _FReCoMessageWorker _worker = getFReCoMessageWorker();
   final _mqttClient = FReCoMqttClient();
-  
+
   @override
   Future subscribeMessage(String messageId) async {
-    _mqttClient.subscribe(messageId);
+    _mqttClient.subscribe(
+        messageId,
+        (messageId, message) => {
+              _worker.addMessage(
+                  FReCoMessageFactory.createMessage(messageId, message))
+            });
   }
 
   @override
@@ -23,12 +29,13 @@ class _FReCoTestClient implements FReCoClient {
 // TODO: eclipse-mosquitto で動作確認している。他のbrokerでは試していない
 @visibleForTesting
 class FReCoMqttClient {
-  final _FReCoMessageWorker _worker = getFReCoMessageWorker();
-  final MqttClient _client = MqttServerClient.withPort("localhost", "", 1883 /* mosquitto の デフォルトのポート番号*/ );
+  final MqttClient _client = MqttServerClient.withPort(
+      "localhost", "", 1883 /* mosquitto の デフォルトのポート番号*/);
 
-  Future<bool> subscribe(String topic) async {
+  Future<bool> subscribe(
+      String topic, Function(String, String) callback) async {
     if (await _connectToClient() == true) {
-      _subscribe(topic);
+      _subscribe(topic, callback);
     }
     return true;
   }
@@ -54,14 +61,14 @@ class FReCoMqttClient {
     debugPrint("$topic を購読します。");
   }
 
-  Future _subscribe(String topic) async {
+  Future _subscribe(String topic, Function(String, String) callback) async {
     _client.subscribe(topic, MqttQos.atMostOnce);
 
     _client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
       final String payloadMessage =
           MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-      _worker.addMessage(FReCoMessageFactory.createMessage(topic, payloadMessage));
+      callback(topic, payloadMessage);
     });
   }
 
