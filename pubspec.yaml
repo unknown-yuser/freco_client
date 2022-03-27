@@ -35,6 +35,7 @@ dev_dependencies:
     sdk: flutter
   flutter_lints: ^1.0.0
   build_runner:
+  build_web_compilers:
   stacked_generator:
     git:
       url: https://github.com/unknown-yuser/stacked.git

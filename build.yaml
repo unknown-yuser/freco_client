@@ -1,0 +1,18 @@
+builders:
+  # Generator for protobuf
+  frecoMessageBuilderFactory:
+    import: 'package:freco_client/build_tool/builder.dart'
+    builder_factories: ['frecoMessageBuilderFactory']
+    build_extensions: {
+      '.proto': ['.pbjson.dart', '.pb.dart', '.pbenum.dart']
+    }
+    auto_apply: root_package
+    build_to: source
+    defaults:
+      options: {'output': 'lib/service/messages' }
+targets:
+  $default:
+    sources:
+      - lib/**
+      - protocol/**
+      - $package$
