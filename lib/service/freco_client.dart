@@ -14,10 +14,7 @@ class _FReCoTestClient implements FReCoClient {
   Future subscribeMessage(String messageId) async {
     _mqttClient.subscribe(
         messageId,
-        (messageId, message) => {
-              _worker.addMessage(
-                  FReCoMessageFactory.createMessage(messageId, message))
-            });
+        (message) => { _worker.addMessage(message)} );
   }
 
   @override
@@ -33,7 +30,7 @@ class FReCoMqttClient {
       "localhost", "", 1883 /* mosquitto の デフォルトのポート番号*/);
 
   Future<bool> subscribe(
-      String topic, Function(String, String) callback) async {
+      String topic, Function(FReCoMessage) callback) async {
     if (await _connectToClient() == true) {
       _subscribe(topic, callback);
     }
@@ -61,14 +58,12 @@ class FReCoMqttClient {
     debugPrint("$topic を購読します。");
   }
 
-  Future _subscribe(String topic, Function(String, String) callback) async {
+  Future _subscribe(String topic, Function(FReCoMessage) callback) async {
     _client.subscribe(topic, MqttQos.atMostOnce);
 
     _client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
-      final String payloadMessage =
-          MqttPublishPayload.bytesToStringAsString(recMess.payload.message);
-      callback(topic, payloadMessage);
+      callback(generateMessage(topic, recMess.payload.message));
     });
   }
 
