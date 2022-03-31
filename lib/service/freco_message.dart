@@ -3,10 +3,20 @@ import 'package:protobuf/protobuf.dart' as $pb;
 
 typedef FReCoMessage = $pb.GeneratedMessage;
 
-// extension FReCoMessageExtension on Position {
-//   String getMessageId() => "position";
-// }
+// TODO: 全体的に build_runner で作成できるようにする
+FReCoMessage? generateMessage(String id, dynamic src) {
+  switch(id) {
+    case "position":
+      return Position.fromBuffer(src);
+    default:
+      return null;
+  }
+}
 
-FReCoMessage generateMessage(String id, dynamic src) {
-  return Position.fromBuffer(src);
+Map<Type, String> typeIdMap = {
+  Position: "position"
+};
+
+String? getIdFromMessageType(Type type) {
+  return typeIdMap[type];
 }

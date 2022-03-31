@@ -14,7 +14,7 @@ class ControllerPageViewModel extends BaseViewModel {
   ControllerPageViewModel() :
         _frecoMessenger = FReCoMessenger() {
     // TODO: typeの入力
-    _positionMessage = _frecoMessenger.getMessageStream<Position>("position");
+    _positionMessage = _frecoMessenger.getMessageStream<Position>();
     _positionMessage.listen((event) {
       x = event.x;
       y = event.y;

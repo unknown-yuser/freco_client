@@ -16,8 +16,11 @@ class FReCoMessenger {
     }
   }
 
-  Stream<T> getMessageStream<T extends FReCoMessage>(String messageId) {
-    _client.subscribeMessage(messageId);
+  Stream<T> getMessageStream<T extends FReCoMessage>() {
+    final messageId = getIdFromMessageType(T);
+    if (messageId != null) {
+      _client.subscribeMessage(messageId);
+    }
     return _client.getMessageSubject().whereType<T>();
   }
 }

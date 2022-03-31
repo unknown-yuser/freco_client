@@ -63,7 +63,10 @@ class FReCoMqttClient {
 
     _client.updates?.listen((List<MqttReceivedMessage<MqttMessage?>>? c) {
       final recMess = c![0].payload as MqttPublishMessage;
-      callback(generateMessage(topic, recMess.payload.message));
+      final message = generateMessage(topic, recMess.payload.message);
+      if (message != null) {
+        callback(message);
+      }
     });
   }
 
