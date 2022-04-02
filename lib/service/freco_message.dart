@@ -1,22 +1,23 @@
-import 'package:freco_client/service/messages/basic.pb.dart';
 import 'package:protobuf/protobuf.dart' as $pb;
+import 'freco_message_extension.dart';
 
 typedef FReCoMessage = $pb.GeneratedMessage;
 
-// TODO: 全体的に build_runner で作成できるようにする
-FReCoMessage? generateMessage(String id, dynamic src) {
-  switch(id) {
-    case "position":
-      return Position.fromBuffer(src);
-    default:
-      return null;
+class FReCoMessageMap with FReCoMessageMapRegister {
+  static final FReCoMessageMap _singleton = FReCoMessageMap._internal();
+  static final Map<Type, String> _typeIdMap = {};
+
+  factory FReCoMessageMap() {
+    return _singleton;
   }
-}
 
-Map<Type, String> typeIdMap = {
-  Position: "position"
-};
+  FReCoMessageMap._internal() {
+    register(_typeIdMap);
+  }
 
-String? getIdFromMessageType(Type type) {
-  return typeIdMap[type];
+  void appendMap(Map<Type, String> map) {
+    _typeIdMap.addAll(map);
+  }
+
+  String? getIdFromType(Type type) => _typeIdMap[type];
 }
